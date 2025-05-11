@@ -1,6 +1,6 @@
 import "./styles/output.css";
 import React from "react";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import ReactDOM from "react-dom/client";
 import Input from "./components/Input";
 
@@ -18,6 +18,14 @@ const App = () => {
   const submitPrompt = async () => {
     if (!prompt.trim()) return;
 
+    const splitPrompt = prompt.split(" ");
+    if (splitPrompt[0] === "change" && splitPrompt[1] === "model") {
+      window.electronAPI.changeModel(splitPrompt[2]);
+      setPrompt("");
+      alert("Model changed to " + splitPrompt[2]);
+      return;
+    }
+
     setResponseLoading(true);
     setMessages((prev) => [...prev, { from: "user", text: prompt }]);
 
@@ -29,7 +37,7 @@ const App = () => {
         .map((message) => `from: ${message.from} text: ${message.text}\n`)
         .toString();
       const response = await ai.models.generateContent({
-        model: "gemini-2.0-flash",
+        model: await window.electronAPI.fetchCurrentModel(),
         contents: `Conversation history: ${conversationHistory} \n\n prompt: ${aiPrompt} \n Do not mention the conversation history in the response.`,
       });
       setMessages((prev) => [
