@@ -1,4 +1,4 @@
-import { app, BrowserWindow, ipcMain } from "electron";
+import { app, BrowserWindow, ipcMain, globalShortcut } from "electron";
 import path from "node:path";
 import started from "electron-squirrel-startup";
 import Store from "electron-store";
@@ -14,9 +14,11 @@ if (started) {
   app.quit();
 }
 
+let mainWindow: BrowserWindow;
+
 const createWindow = () => {
   // Create the browser window.
-  const mainWindow = new BrowserWindow({
+  mainWindow = new BrowserWindow({
     width: 800,
     height: 600,
     webPreferences: {
@@ -35,14 +37,18 @@ const createWindow = () => {
     );
   }
 
-  // Open the DevTools.
-  mainWindow.webContents.openDevTools();
+  mainWindow.hide();
 };
 
 // This method will be called when Electron has finished
 // initialization and is ready to create browser windows.
 // Some APIs can only be used after this event occurs.
-app.on("ready", createWindow);
+app.on("ready", () => {
+  createWindow();
+  globalShortcut.register("Control+Q", () => {
+    mainWindow.isVisible() ? mainWindow.hide() : mainWindow.show();
+  });
+});
 
 // Quit when all windows are closed, except on macOS. There, it's common
 // for applications and their menu bar to stay active until the user quits
@@ -67,4 +73,11 @@ ipcMain.handle("fetch-current-model", () => {
 
 ipcMain.on("change-model", (event, model) => {
   store.set("currentModel", model);
+});
+
+ipcMain.on("close-window", (event) => {
+  const window = BrowserWindow.getFocusedWindow();
+  if (window) {
+    window.hide();
+  }
 });

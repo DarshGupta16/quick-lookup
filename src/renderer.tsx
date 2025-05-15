@@ -1,11 +1,13 @@
 import "./styles/output.css";
 import React from "react";
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import ReactDOM from "react-dom/client";
 import Input from "./components/Input";
 
 import { Message } from "./types/chat";
 import Markdown from "react-markdown";
+
+import CloseButton from "./components/CloseButton";
 
 import { GoogleGenAI } from "@google/genai";
 const ai = new GoogleGenAI({ apiKey: import.meta.env.VITE_GEMINI_API_KEY });
@@ -54,6 +56,7 @@ const App = () => {
 
   return (
     <div className="h-screen w-full flex items-center justify-center text-center p-9">
+      <CloseButton closeFunc={() => setMessages([])} />
       <div className="w-full h-full p-3 border-4 border-gray-300 rounded-xl flex flex-col items-start justify-start text-center">
         <div className="overflow-y-auto w-full h-full flex flex-col-reverse">
           {[...messages].reverse().map((message, index) => (
