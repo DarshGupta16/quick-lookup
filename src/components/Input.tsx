@@ -1,4 +1,5 @@
 import { Send, Loader2 } from "lucide-react";
+
 export default function Input({
   text,
   setText,
@@ -11,26 +12,34 @@ export default function Input({
   disabled?: boolean;
 }) {
   return (
-    <div className="flex items-center justify-center text-center gap-x-1 w-full">
+    <div className="relative w-full max-w-2xl mx-auto">
       <input
         type="text"
-        className="w-full h-11 rounded-lg px-2 py-1 border-4 border-gray-300"
+        className="w-full h-12 pl-4 pr-12 rounded-full bg-zinc-800 border border-zinc-700 text-zinc-100 placeholder-zinc-500 focus:outline-none focus:ring-2 focus:ring-blue-500/50 focus:border-blue-500 transition-all shadow-lg"
         placeholder="Ask something..."
         value={text}
         onChange={(e) => setText(e.target.value)}
         onKeyDown={(e) => {
-          if (e.key === "Enter") {
+          if (e.key === "Enter" && !disabled) {
             onInput();
           }
         }}
         disabled={disabled}
       />
       <button
-        className="w-11 h-11 rounded-lg p-2 border-4 border-gray-300 hover:bg-gray-100 cursor-pointer transition-all flex items-center justify-center text-center"
+        className={`absolute right-1.5 top-1.5 h-9 w-9 rounded-full flex items-center justify-center transition-all ${
+          text.trim() && !disabled
+            ? "bg-blue-600 text-white hover:bg-blue-500 shadow-md cursor-pointer"
+            : "bg-zinc-700 text-zinc-500 cursor-not-allowed"
+        }`}
         onClick={onInput}
-        disabled={disabled}
+        disabled={disabled || !text.trim()}
       >
-        {!disabled ? <Send /> : <Loader2 className="animate-spin" />}
+        {!disabled ? (
+          <Send size={16} />
+        ) : (
+          <Loader2 size={16} className="animate-spin" />
+        )}
       </button>
     </div>
   );

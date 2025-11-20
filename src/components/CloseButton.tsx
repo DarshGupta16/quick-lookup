@@ -1,4 +1,5 @@
 "use client";
+import { X } from "lucide-react";
 
 export default function CloseButton({ closeFunc }: { closeFunc: () => void }) {
   const handleClose = () => {
@@ -7,9 +8,11 @@ export default function CloseButton({ closeFunc }: { closeFunc: () => void }) {
   };
 
   return (
-    <div
-      className="w-3 h-3 cursor-pointer bg-red-500 rounded-full absolute top-4 right-4"
+    <button
+      className="absolute top-1 mt-[2px] right-4 p-2 rounded-full text-zinc-400 hover:bg-zinc-800 hover:text-zinc-100 transition-colors cursor-pointer z-50"
       onClick={handleClose}
-    ></div>
+    >
+      <X size={20} />
+    </button>
   );
 }

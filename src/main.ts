@@ -17,10 +17,14 @@ if (started) {
 let mainWindow: BrowserWindow;
 
 const createWindow = () => {
+  if (process.platform === "win32") {
+    app.setAppUserModelId("Quick Lookup"); // Or your app ID
+  }
   // Create the browser window.
   mainWindow = new BrowserWindow({
     width: 800,
     height: 600,
+    icon: path.join(__dirname, "icon.ico"),
     webPreferences: {
       preload: path.join(__dirname, "preload.js"),
     },
